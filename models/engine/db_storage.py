@@ -59,6 +59,11 @@ class DBStorage:
         """commit all changes of the current database session"""
         self.__session.commit()
 
+    def count(self, cls=None):
+        """
+        count of how many instances of a class """
+        return len(self.all(cls))
+
     def get(self, cls, id):
         """
         fetches specific object
