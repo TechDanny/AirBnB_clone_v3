@@ -59,6 +59,21 @@ class DBStorage:
         """commit all changes of the current database session"""
         self.__session.commit()
 
+    def get(self, cls, id):
+        """
+        fetches specific object
+        :param cls: class of object as string
+        :param id: id of object as string
+        :return: found object or None
+        """
+        all_class = self.all(cls)
+
+        for obj in all_class.values():
+            if id == str(obj.id):
+                return obj
+
+        return None
+
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
         if obj is not None:
@@ -67,9 +82,10 @@ class DBStorage:
     def reload(self):
         """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
-        sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(sess_factory)
-        self.__session = Session
+        self.__session = scoped_session(
+            sessionmaker(
+                bind=self.__engine,
+                expire_on_commit=False))
 
     def close(self):
         """call remove() method on the private session attribute"""
