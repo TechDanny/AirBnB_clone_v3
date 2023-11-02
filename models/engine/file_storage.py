@@ -50,8 +50,23 @@ class FileStorage:
 
     def count(self, cls=None):
         """ count of instances """
-
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is None:
+            return len(self.all())
         return len(self.all(cls))
+
+    def get(self, cls, id):
+        """
+        retrieves one object
+        """
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is None:
+            return None
+        for item in self.object.values():
+            if item.__class__ == cls and item.id == id:
+                return item
 
     def reload(self):
         """deserializes the JSON file to __objects"""

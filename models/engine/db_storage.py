@@ -62,6 +62,10 @@ class DBStorage:
     def count(self, cls=None):
         """
         count of how many instances of a class """
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is None:
+            return len(self.all())
         return len(self.all(cls))
 
     def get(self, cls, id):
@@ -71,13 +75,11 @@ class DBStorage:
         :param id: id of object as string
         :return: found object or None
         """
-        all_class = self.all(cls)
-
-        for obj in all_class.values():
-            if id == str(obj.id):
-                return obj
-
-        return None
+        if type(cls) == str:
+            cls = classes.get(cls)
+        if cls is None:
+            return None
+        return self.__session.query(cls).filter(cls.id == id).first()
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
